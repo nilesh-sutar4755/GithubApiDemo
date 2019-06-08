@@ -11,8 +11,10 @@ export class UsersComponent implements OnInit {
 
   searchItem;
   itemsList = [];
+  detailsList;
   totalCount;
   sortItem;
+  hideme = [];
   disabledFlag: boolean;
   ngOnInit() {
     this.searchItem = "";
@@ -28,15 +30,26 @@ export class UsersComponent implements OnInit {
     if (searchItem != "" && searchItem != null && searchItem != undefined) {
       this._service.getAPICall("search/users?q=" + searchItem).subscribe(
         data => {
-          console.log(data);
           this.totalCount = data["total_count"];
           this.itemsList = data["items"];
         },
         error => {
-          console.log(error);
+          this._service.handleError(error);
         }
       );
     }
+  }
+
+  getDetails(username) {
+    this.detailsList = [];
+    this._service.getAPICall("users/" + username + "/repos").subscribe(
+      data => {
+        this.detailsList = data;
+      },
+      error => {
+        this._service.handleError(error);
+      }
+    );
   }
 
   sortList(e) {

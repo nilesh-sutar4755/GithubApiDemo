@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md bg-primary navbar-dark p-3">
+<nav class="navbar navbar-expand-md bg-primary navbar-dark p-3 fixed-top">
   <button
     class="navbar-toggler"
     type="button"
@@ -11,9 +11,9 @@
     class="collapse navbar-collapse justify-content-center"
     id="collapsibleNavbar"
   >
-    <ul class="navbar-nav">
+    <ul class="navbar-nav mt-2">
       <li class="nav-item pr-3">
-        <div class="form-group mb-0">
+        <div class="form-group mb-2">
           <select
             [disabled]="itemsList.length == 0"
             class="form-control"
@@ -45,13 +45,23 @@
     </ul>
   </div>
 </nav>
-<div class="container">
+<div class="container pt-5 mt-5 user-wrapper">
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8">
       <h5 class="mt-3 mb-3" *ngIf="totalCount">
         Total Count : {{ totalCount }}
       </h5>
-      <div class="card mb-4" *ngFor="let item of itemsList">
+      <pagination-controls
+        *ngIf="totalCount"
+        (pageChange)="p = $event"
+      ></pagination-controls>
+      <div
+        class="card mb-4"
+        *ngFor="
+          let item of itemsList | paginate: { itemsPerPage: 5, currentPage: p };
+          let i = index
+        "
+      >
         <div class="card-body">
           <div class="row">
             <div class="col-md-4">
@@ -64,10 +74,47 @@
             </div>
             <div class="col-md-8">
               <h4>{{ item.login }}</h4>
-              <p>Profile Url : {{ item.url }}</p>
+              <p>
+                Profile Url :
+                <a [href]="item.html_url" target="_blank">
+                  {{ item.html_url }}</a
+                >
+              </p>
 
               <div class="float-right">
-                <a href="#" class="btn btn-primary">Details</a>
+                <a
+                  (click)="
+                    !hideme[i] ? getDetails(item.login, item.id) : undefined;
+                    hideme[i] = !hideme[i]
+                  "
+                  class="btn btn-primary"
+                  >Details</a
+                >
+              </div>
+            </div>
+            <div class="col-12" [hidden]="!hideme[i]">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Repository Name</th>
+                      <th>Language Used</th>
+                      <th>Star count</th>
+                      <th>Open issues_count</th>
+                      <th>Forks count</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of detailsList">
+                      <td>{{ item.full_name }}</td>
+                      <td>{{ item.language }}</td>
+                      <td>{{ item.stargazers_count }}</td>
+                      <td>{{ item.open_issues_count }}</td>
+                      <td>{{ item.forks_count }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

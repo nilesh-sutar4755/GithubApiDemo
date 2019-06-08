@@ -1,0 +1,10 @@
+.user-wrapper {
+  .card {
+    a {
+      &.btn-primary {
+        cursor: pointer;
+        color: #fff;
+      }
+    }
+  }
+}

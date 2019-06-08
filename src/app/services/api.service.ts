@@ -36,4 +36,8 @@ export class ApiService {
       this.options
     );
   }
+
+  handleError(msg) {
+    console.log(msg);
+  }
 }
