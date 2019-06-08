@@ -1,9 +1,15 @@
 .user-wrapper {
+  padding-top: 8rem;
   .card {
-    a {
-      &.btn-primary {
-        cursor: pointer;
-        color: #fff;
+    .card-body {
+      a {
+        &.btn-primary {
+          cursor: pointer;
+          color: #fff;
+        }
+      }
+      img {
+        width: 100px;
       }
     }
   }

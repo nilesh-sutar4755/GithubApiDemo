@@ -10,41 +10,61 @@ export class UsersComponent implements OnInit {
   constructor(public _service: ApiService) {}
 
   searchItem;
-  itemsList = [];
+  itemsList: any = [];
   detailsList;
   totalCount;
   sortItem;
   hideme = [];
+  index;
+  loaderFlag: boolean;
   disabledFlag: boolean;
+  p: number = 1;
   ngOnInit() {
     this.searchItem = "";
     this.sortItem = "";
+    this.getUsers();
     if (this.itemsList.length == 0) {
       this.disabledFlag = true;
     } else {
       this.disabledFlag = false;
     }
   }
-
+  getUsers() {
+    this._service.getAPICall("users").subscribe(
+      data => {
+        this.itemsList = data;
+      },
+      error => {
+        this._service.handleError(error);
+      }
+    );
+  }
   serachUser(searchItem) {
     if (searchItem != "" && searchItem != null && searchItem != undefined) {
-      this._service.getAPICall("search/users?q=" + searchItem).subscribe(
-        data => {
-          this.totalCount = data["total_count"];
-          this.itemsList = data["items"];
-        },
-        error => {
-          this._service.handleError(error);
-        }
-      );
+      this._service
+        .getAPICall(
+          "search/users?q=" + searchItem + "&page=" + 1 + "&per_page=5"
+        )
+        .subscribe(
+          data => {
+            this.totalCount = data["total_count"];
+            this.itemsList = data["items"];
+          },
+          error => {
+            this._service.handleError(error);
+          }
+        );
     }
   }
 
-  getDetails(username) {
+  getDetails(username, index) {
+    this.index = index;
     this.detailsList = [];
+    this.loaderFlag = true;
     this._service.getAPICall("users/" + username + "/repos").subscribe(
       data => {
         this.detailsList = data;
+        this.loaderFlag = false;
       },
       error => {
         this._service.handleError(error);
@@ -94,5 +114,33 @@ export class UsersComponent implements OnInit {
         return 0;
       });
     }
+  }
+
+  paginateIt(e) {
+    if (e) {
+      this.hideme[this.index] = false;
+      this.detailsList = [];
+    }
+    let apiUrl: any;
+    if (this.searchItem) {
+      apiUrl =
+        "search/users?q=" + this.searchItem + "&page=" + e + "&per_page=5";
+    } else {
+      apiUrl = "users?&page=" + e;
+    }
+    this._service.getAPICall(apiUrl).subscribe(
+      data => {
+        if (this.searchItem) {
+          this.totalCount = data["total_count"];
+          this.itemsList = data["items"];
+        } else {
+          this.itemsList = data;
+        }
+      },
+      error => {
+        this._service.handleError(error);
+      }
+    );
+    console.log(e);
   }
 }

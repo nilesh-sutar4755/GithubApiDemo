@@ -37,7 +37,8 @@ export class ApiService {
     );
   }
 
-  handleError(msg) {
-    console.log(msg);
+  handleError(error) {
+    alert(error.error.message);
+    console.log(error);
   }
 }
