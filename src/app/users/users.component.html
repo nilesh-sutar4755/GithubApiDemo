@@ -106,7 +106,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of detailsList">
-                      <td>{{ item.full_name }}</td>
+                      <td><a [href]="item.html_url" target="_blank">{{ item.full_name }}</a></td>
                       <td>{{ item.language }}</td>
                       <td>{{ item.stargazers_count }}</td>
                       <td>{{ item.open_issues_count }}</td>

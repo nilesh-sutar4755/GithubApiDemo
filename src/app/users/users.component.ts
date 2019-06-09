@@ -41,10 +41,10 @@ export class UsersComponent implements OnInit {
   }
   serachUser(searchItem) {
     if (searchItem != "" && searchItem != null && searchItem != undefined) {
+      this.sortItem = "";
+
       this._service
-        .getAPICall(
-          "search/users?q=" + searchItem + "&page=" + 1 + "&per_page=5"
-        )
+        .getAPICall("search/users?q=" + searchItem + "&per_page=5")
         .subscribe(
           data => {
             this.totalCount = data["total_count"];
@@ -73,6 +73,10 @@ export class UsersComponent implements OnInit {
   }
 
   sortList(e) {
+    if (e) {
+      this.hideme[this.index] = false;
+      this.detailsList = [];
+    }
     if (this.sortItem == "1") {
       this.itemsList.sort(function(a, b) {
         if (a.login < b.login) {
